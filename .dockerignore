@@ -1,0 +1,80 @@
+# Git
+.git
+.gitignore
+.github/
+
+# Docker
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Documentation
+README.md
+CHANGELOG.md
+LICENSE
+docs/
+
+# Build and test files
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+/build/
+/bin/
+/dist/
+/vendor/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# macOS specific
+.DS_Store
+
+# Local environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+*.local.yaml
+*.local.yml
+*.local.json
+
+# Logs
+*.log
+debug
+
+# Database files
+*.db
+*.sqlite
+
+# Temporary files
+**/tmp/
+/tmp/
+/tmp-air/
+
+# CI/CD configuration
+.travis.yml
+.gitlab-ci.yml
+appveyor.yml
+
+# Project management files
+*.md
+!README*.md
+
+# Air live reload
+/tmp-air/
+
+# Test coverage
+coverage.txt
+profile.out
+
+# Mock files for testing
+*_mock.go
