@@ -26,16 +26,16 @@ type User struct {
 
 	IsPremium  bool       `json:"is_premium" gorm:"default:false"`
 	PremiumExp *time.Time `json:"premium_expiration"`
+	Coins      uint       `json:"coins" gorm:"default:0;check:coins >= 0"`
 
 	IsPrivate  bool `json:"is_private" gorm:"default:false"`
 	IsVerified bool `json:"is_verified" gorm:"default:false"`
 
 	ProfileLikes int `json:"profile_likes" gorm:"default:0"`
 
-	LastLoginAt *time.Time     `json:"last_login_at"`
-	CreatedAt   time.Time      `json:"created_at"`
-	UpdatedAt   time.Time      `json:"updated_at"`
-	DeletedAt   gorm.DeletedAt `json:"-" gorm:"index"`
+	CreatedAt time.Time      `json:"created_at" gorm:"autoCreateTime"`
+	UpdatedAt time.Time      `json:"updated_at" gorm:"autoUpdateTime"`
+	DeletedAt gorm.DeletedAt `json:"-" gorm:"index"`
 }
 
 // BeforeCreate will set a UUID rather than numeric ID
@@ -48,7 +48,6 @@ func (u *User) BeforeCreate(tx *gorm.DB) error {
 
 // UserSession represents a login session (stored in Redis)
 type UserSession struct {
-	ID        string    `json:"id"`
 	UserID    string    `json:"user_id"`
 	TokenHash string    `json:"-"`
 	UserAgent string    `json:"user_agent"`
