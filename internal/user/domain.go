@@ -26,7 +26,7 @@ type User struct {
 
 	IsPremium  bool       `json:"is_premium" gorm:"default:false"`
 	PremiumExp *time.Time `json:"premium_expiration"`
-	Coins      uint       `json:"coins" gorm:"default:0;check:coins >= 0"`
+	Coins      int        `json:"coins" gorm:"default:0;check:coins >= 0"`
 
 	IsPrivate  bool `json:"is_private" gorm:"default:false"`
 	IsVerified bool `json:"is_verified" gorm:"default:false"`
@@ -59,11 +59,12 @@ type UserSession struct {
 
 // CreateUserRequest represents the request to create a new user
 type CreateUserRequest struct {
-	Username  string `json:"username" binding:"required,min=3,max=30"`
-	Email     string `json:"email" binding:"required,email"`
-	Password  string `json:"password" binding:"required,min=6,max=20"`
-	FirstName string `json:"first_name" binding:"required"`
-	LastName  string `json:"last_name" binding:"required"`
+	Username    string `json:"username" binding:"required,min=3,max=30"`
+	Email       string `json:"email" binding:"required,email"`
+	Password    string `json:"password" binding:"required,min=6,max=20"`
+	FirstName   string `json:"first_name" binding:"required"`
+	LastName    string `json:"last_name" binding:"required"`
+	LuckyNumber string `json:"lucky_number" binding:"required"`
 
 	ProfilePicture string   `json:"profile_picture"`
 	CoverPicture   string   `json:"cover_picture"`
@@ -78,28 +79,17 @@ type CreateUserRequest struct {
 type UpdateUserRequest struct {
 	FirstName string `json:"first_name" binding:"min=3,max=30"`
 	LastName  string `json:"last_name" binding:"min=3,max=20"`
-	Email     string `json:"email" binding:"email"`
+	Username  string `json:"username" binding:"required,min=3,max=12"`
 
 	ProfilePicture string   `json:"profile_picture"`
 	CoverPicture   string   `json:"cover_picture"`
 	Ft3Pictures    []string `json:"featured_3_pictures"`
-
-	IsPremium  *bool      `json:"is_premium"`
-	PremiumExp *time.Time `json:"premium_expiration"`
-	IsPrivate  *bool      `json:"is_private"`
-	IsVerified *bool      `json:"is_verified"`
 }
 
 // LoginRequest represents the login credentials
 type LoginRequest struct {
 	Email    string `json:"Email" binding:"required"`
 	Password string `json:"password" binding:"required"`
-}
-
-// PasswordResetRequest represents a password reset request
-type PasswordResetRequest struct {
-	Email       string `json:"email" binding:"required,email"`
-	LuckyNumber int    `json:"lucky_number" binding:"required"`
 }
 
 // PasswordResetConfirmRequest represents a password reset confirmation
@@ -124,10 +114,9 @@ type UserProfile struct {
 
 	IsPremium  bool       `json:"is_premium"`
 	PremiumExp *time.Time `json:"premium_expiration,omitempty"`
+	Coins      int        `json:"coins"`
 	IsPrivate  bool       `json:"is_private"`
 	IsVerified bool       `json:"is_verified"`
-
-	PostsCount int `json:"posts_count" gorm:"-"`
 }
 
 // UserResponse is the standard user response
@@ -150,6 +139,18 @@ type UserResponse struct {
 	IsPrivate  bool       `json:"is_private"`
 	IsVerified bool       `json:"is_verified"`
 	CreatedAt  time.Time  `json:"created_at"`
+}
+
+// Checking Email and Username
+type CheckEmailAndUsernameRequest struct {
+	Email    string `json:"email" binding:"required,email"`
+	Username string `json:"username" binding:"required,min=3,max=12"`
+}
+
+type PasswordResetRequest struct {
+	Email       string `json:"email" binding:"required,email"`
+	LuckyNumber int    `json:"lucky_number" binding:"required"`
+	Username    string `json:"username" binding:"required,min=3,max=30"`
 }
 
 // LoginResponse contains the token and user info

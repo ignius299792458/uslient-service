@@ -24,7 +24,7 @@ type UserRepository interface {
 
 	// Session Management
 	CreateSession(ctx context.Context, session *UserSession) (*UserSession, error)
-	GetSession(ctx context.Context, userId string) (*User, error)
+	GetSession(ctx context.Context, userId string) (*UserSession, error)
 	CleanSession(ctx context.Context, userId string) error
 }
 
@@ -137,7 +137,7 @@ func (r *UserPersistRepository) CreateSession(ctx context.Context, session *User
 }
 
 func (r *UserPersistRepository) GetSession(ctx context.Context, userId string) (*UserSession, error) {
-	sessionKey := fmt.Sprintf("session:%s", userId)
+	sessionKey := fmt.Sprintf(constants.UserSessionRK, userId)
 
 	// Get all fields from the hash
 	sessionData, err := r.redis.HGetAll(ctx, sessionKey).Result()
@@ -178,4 +178,21 @@ func (r *UserPersistRepository) GetSession(ctx context.Context, userId string) (
 	}
 
 	return session, nil
+}
+
+func (r *UserPersistRepository) CleanSession(ctx context.Context, userId string) error {
+	sessionKey := fmt.Sprintf(constants.UserSessionRK, userId)
+	activeSessionsKey := constants.ActiveUsersRK
+
+	// Remove the user's session
+	if err := r.redis.Del(ctx, sessionKey).Err(); err != nil {
+		return fmt.Errorf("failed to delete expired session: %w", err)
+	}
+
+	// Remove from all active users set
+	if err := r.redis.SRem(ctx, activeSessionsKey, userId).Err(); err != nil {
+		return fmt.Errorf("failed to remove from active sessions list: %w", err)
+	}
+
+	return nil
 }
