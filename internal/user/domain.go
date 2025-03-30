@@ -10,19 +10,24 @@ import (
 
 // User represents the user model
 type User struct {
-	ID           string `json:"id" gorm:"primaryKey;type:uuid"`
-	Username     string `json:"username" gorm:"uniqueIndex;not null"`
-	Email        string `json:"email" gorm:"uniqueIndex;not null"`
+	ID         string `json:"id" gorm:"primaryKey;type:uuid"`
+	Username   string `json:"username" gorm:"uniqueIndex;not null"`
+	FirstName  string `json:"first_name" gorm:"not null"`
+	LastName   string `json:"last_name" gorm:"not null"`
+	Email      string `json:"email" gorm:"uniqueIndex;not null"`
+	Gender     string `json:"gender" gorm:"not null"`
+	Lookingfor string `json:"lookingfor" gorm:"not null"`
+	Birthdate  string `json:"birthdate" gorm:"not null"`
+
 	PasswordHash string `json:"-" gorm:"not null"`
 	LuckyNumber  string `json:"lucky_number" gorm:"not null"` // for password reset safety
 
-	FirstName string `json:"first_name" gorm:"not null"`
-	LastName  string `json:"last_name" gorm:"not null"`
-	Location  string `json:"location" gorm:"not null"`
+	Location string `json:"location" gorm:"not null"`
 
 	ProfilePicture string   `json:"profile_picture" gorm:"not null"`
 	CoverPicture   string   `json:"cover_picture" gorm:"not null"`
 	Ft3Pictures    []string `json:"featured_3_pictures" gorm:"not null"`
+	ProofImage     string   `json:"proof_image" gorm:"not null"`
 
 	IsPremium  bool       `json:"is_premium" gorm:"default:false"`
 	PremiumExp *time.Time `json:"premium_expiration"`
@@ -59,11 +64,15 @@ type UserSession struct {
 
 // CreateUserRequest represents the request to create a new user
 type CreateUserRequest struct {
-	Username    string `json:"username" binding:"required,min=3,max=30"`
-	Email       string `json:"email" binding:"required,email"`
-	Password    string `json:"password" binding:"required,min=6,max=20"`
-	FirstName   string `json:"first_name" binding:"required"`
-	LastName    string `json:"last_name" binding:"required"`
+	Username   string `json:"username" binding:"required,min=3,max=30"`
+	Email      string `json:"email" binding:"required,email"`
+	Password   string `json:"password" binding:"required,min=6,max=20"`
+	FirstName  string `json:"first_name" binding:"required"`
+	LastName   string `json:"last_name" binding:"required"`
+	Gender     string `json:"gender" binding:"required"`
+	Lookingfor string `json:"lookingfor" binding:"required"`
+	Birthdate  string `json:"birthdate" binding:"required"`
+
 	LuckyNumber string `json:"lucky_number" binding:"required"`
 
 	ProfilePicture string   `json:"profile_picture"`
@@ -77,9 +86,12 @@ type CreateUserRequest struct {
 
 // UpdateUserRequest represents the request to update a user
 type UpdateUserRequest struct {
-	FirstName string `json:"first_name" binding:"min=3,max=30"`
-	LastName  string `json:"last_name" binding:"min=3,max=20"`
-	Username  string `json:"username" binding:"required,min=3,max=12"`
+	FirstName  string `json:"first_name" binding:"min=3,max=30"`
+	LastName   string `json:"last_name" binding:"min=3,max=20"`
+	Username   string `json:"username" binding:"required,min=3,max=12"`
+	Gender     string `json:"gender" binding:"required"`
+	Lookingfor string `json:"lookingfor" binding:"required"`
+	Birthdate  string `json:"birthdate" binding:"required"`
 
 	ProfilePicture string   `json:"profile_picture"`
 	CoverPicture   string   `json:"cover_picture"`
@@ -104,6 +116,9 @@ type UserProfile struct {
 	Username  string `json:"username"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
+	Gender    string `json:"gender"`
+	Lokingfor string `json:"lokingfor"`
+	Birthdate string `json:"birthdate"`
 	Location  string `json:"location"`
 
 	ProfilePicture string   `json:"profile_picture"`
@@ -126,7 +141,11 @@ type UserResponse struct {
 	Email     string `json:"email"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
-	Location  string `json:"location"`
+	Gender    string `json:"gender"`
+	Lokingfor string `json:"loking_for"`
+	Birthdate string `json:"birthdate"`
+
+	Location string `json:"location"`
 
 	ProfilePicture string   `json:"profile_picture"`
 	CoverPicture   string   `json:"cover_picture"`
@@ -180,6 +199,9 @@ func (u *User) ToResponse() UserResponse {
 		Email:          u.Email,
 		FirstName:      u.FirstName,
 		LastName:       u.LastName,
+		Gender:         u.Gender,
+		Lokingfor:      u.Lookingfor,
+		Birthdate:      u.Birthdate,
 		Location:       u.Location,
 		ProfilePicture: u.ProfilePicture,
 		CoverPicture:   u.CoverPicture,
@@ -200,6 +222,9 @@ func (u *User) ToProfile() UserProfile {
 		Username:       u.Username,
 		FirstName:      u.FirstName,
 		LastName:       u.LastName,
+		Gender:         u.Gender,
+		Lokingfor:      u.Lookingfor,
+		Birthdate:      u.Birthdate,
 		Location:       u.Location,
 		ProfilePicture: u.ProfilePicture,
 		CoverPicture:   u.CoverPicture,
